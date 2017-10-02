@@ -48,5 +48,5 @@ sth wercker-stop
 ```
 
 ## VS Code Debugger
-After running `sth vscode-add` or `sth init` you should see the following run sections:
+After running `sth vscode-add` or `sth init` you should see the following run entries:
 ![vscode debuger](./vscode.png "Logo Title Text 1")
