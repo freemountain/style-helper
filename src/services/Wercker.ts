@@ -51,7 +51,10 @@ export class Wercker {
         const werckerConfig = yaml.safeLoad(werckerFile.toString());
         const services: IWerckerService[] = werckerConfig.services ? werckerConfig.services : [];
 
-        return services.map(service => ({ ...service, id: this.normalizeImage(service.id) }));
+        return services.map(service => {
+            const name = service.name || service.id.split("/").slice(-1).join("");
+            return ({ ...service, id: this.normalizeImage(service.id), name })
+        });
 
     }
 
@@ -70,12 +73,12 @@ export class Wercker {
                     remove: true,
                     env: service.env,
                     ports: true,
-                    name: `wercker-${service.name ||  service.id}`,
+                    name: `wercker-${service.name}`,
                     labels: {
                         LOCAL_WERCKER: "true",
                     },
                 },
-                progress.getFactory({handle: `service.id`}),
+                progress.getFactory({handle: `start ${service.name}`}),
             );
         }));
     }
@@ -91,11 +94,11 @@ export class Wercker {
             R.map(([portAndProto, m]: [string, IStringMap<string>[]]) => {
                 const [exposedPort, proto] = portAndProto.split("/");
                 const { HostPort } = m[0];
-                const prefix = `${upperCaseName}_PORT_${HostPort}_${proto.toUpperCase()}`;
+                const prefix = `${upperCaseName}_PORT_${exposedPort}_${proto.toUpperCase()}`;
 
                 return [
                     { key: `${prefix}_ADDR`, value: ip },
-                    { key: `${prefix}_PORT`, value: exposedPort },
+                    { key: `${prefix}_PORT`, value: HostPort },
                 ] as IKeyValue<string, string>[];
             }),
             (e: IKeyValue<string, string>[][]) => R.flatten<IKeyValue<string, string>>(e),

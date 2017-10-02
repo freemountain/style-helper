@@ -16,11 +16,8 @@ const createExecuteWrapper = (cmd: ICommand, resolve: Function, reject: Function
         });
 
         const result = await cmd.execute(args, stream);
-        console.error(`execute ${cmd.command} finished`, result);
 
         await stream.end();
-
-        console.error(`execute ${cmd.command} stream ended`);
 
         if (result) {
             await new Promise(resolveWrite => process.stdout.write("\n" + result, resolveWrite));
