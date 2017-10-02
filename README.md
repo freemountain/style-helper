@@ -20,10 +20,13 @@ npm link # Adds bin to Path
 ## Prerequisites
 - style-helper should be in PATH
 - all command should be run inside a style project
-- env variable $DOCKER_HOST should be defined
-- some projects (matching-worker) need additional env variables like:
-    - REGISTRY_DOMAIN=gcr.io
-    - REGISTRY_ORG=stylelounge-v1
+- env variable `$STH_DOCKER_HOST`:
+  -  should be `http://127.0.0.1` if docker is running locally
+  -  should be `http://§vmIp§` if docker is running inside vbox
+- if private images are used:
+    - `export REGISTRY_DOMAIN="gcr.io"`
+    - `export REGISTRY_ORG=stylelounge-v1`
+    - `gcloud docker -- pull §image§` should work
 
 ## Commands
 
