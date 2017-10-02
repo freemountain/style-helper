@@ -1,0 +1,8 @@
+/.idea
+/.wercker
+/node_modules
+/dist
+/.env
+/npm-debug.log
+/dump.rdb
+/.DS_Store

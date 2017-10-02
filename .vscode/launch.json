@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run ts file",
+      "type": "node",
+      "request": "launch",
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "args": [],
+      "cwd": "${workspaceRoot}",
+      "preLaunchTask": "tsc",
+      "runtimeExecutable": "sth-debug",
+      "runtimeArgs": [
+        "${relativeFile}"
+      ]
+    },
+    {
+      "name": "Run ts test",
+      "type": "node",
+      "request": "launch",
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "args": [],
+      "cwd": "${workspaceRoot}",
+      "preLaunchTask": "tsc",
+      "runtimeExecutable": "sth-debug",
+      "runtimeArgs": [
+        "--runner",
+        "${workspaceRoot}/node_modules/.bin/_mocha",
+        "${relativeFile}",
+        "--",
+        "--colors",
+        "--no-timeouts"
+      ]
+    }
+  ]
+}
