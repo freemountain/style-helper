@@ -61,7 +61,7 @@ export class Wercker {
     public async start(services: IWerckerService[], progress: ICommandSF = fakeStream()) {
         await Promise.all(services.map(async service => {
             const image = this.getImageTag(service);
-            await this.dockerCli.pull(image, progress);
+            await this.dockerCli.pull(image, service.registry, progress);
         }));
 
         return Promise.all(services.map(async (service) => {

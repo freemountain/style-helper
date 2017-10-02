@@ -16,10 +16,12 @@ export class DockerCli {
         this.docker = getDocker();
     }
 
-    public async pull(image: string, progress: ICommandSF = fakeStream()) {
+    public async pull(image: string, registry?: string, progress: ICommandSF = fakeStream()) {
+        const command = !registry ? "docker" : "gcloud";
+        const args = !registry ? ["pull", image] : ["docker", "--", "pull", image];
         await exec({
-            command: "gcloud",
-            args: ["docker", "--", "pull", image],
+            command,
+            args,
             progress: progress.getFactory({ handle: `pull ${image}` })
         });
     }
