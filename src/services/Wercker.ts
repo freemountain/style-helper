@@ -67,7 +67,7 @@ export class Wercker {
                     remove: true,
                     env: service.env,
                     ports: true,
-                    name: `wercker-${service.id}`,
+                    name: `wercker-${service.name || service.id}`,
                     labels: {
                         LOCAL_WERCKER: "true",
                     },
