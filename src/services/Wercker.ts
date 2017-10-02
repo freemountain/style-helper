@@ -5,7 +5,7 @@ import * as yaml from "js-yaml";
 import { join } from "path";
 import * as R from "ramda";
 
-import { IStringMap, IWerckerService } from "../interfaces";
+import { IStringMap, IWerckerService, ISettings } from "../interfaces";
 import { DockerCli } from "../services";
 import { fakeStream, ICommandSF } from "../console";
 
@@ -17,18 +17,21 @@ interface IKeyValue<K, V> {
 @injectable()
 export class Wercker {
     private docker: Docker;
+    private settings: ISettings;
 
     constructor(
         @inject("getDocker") getDocker: () => Docker,
         @inject("DockerCli") private dockerCli: DockerCli,
         @inject("Fs") private fs: typeof Fs,
+        @inject("getSettings") private getSettings: () => ISettings,
     ) {
         this.docker = getDocker();
+        this.settings = getSettings();
     }
 
     public async getEnv(progress: ICommandSF = fakeStream()): Promise<IStringMap<string>> {
         const ids = await this.dockerCli.listContainer({ LOCAL_WERCKER: "true" }, progress);
-        const config = this.dockerCli.getConfig();
+        //const config = this
 
         return ids.reduce(
             async (next: Promise<IStringMap<string>>, id: string) => {
@@ -37,7 +40,7 @@ export class Wercker {
                 const info = await container.inspect();
                 const name = info.Name.slice(9);
 
-                return { ...all, ...this.generateServiceEnv(config.host, name, info) };
+                return { ...all, ...this.generateServiceEnv(this.settings.docker, name, info) };
             },
             Promise.resolve({} as IStringMap<string>),
         );
@@ -67,7 +70,7 @@ export class Wercker {
                     remove: true,
                     env: service.env,
                     ports: true,
-                    name: `wercker-${service.name || service.id}`,
+                    name: `wercker-${service.name ||  service.id}`,
                     labels: {
                         LOCAL_WERCKER: "true",
                     },

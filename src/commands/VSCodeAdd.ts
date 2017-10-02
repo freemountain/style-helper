@@ -10,11 +10,13 @@ import { ICommandRootStream, ICommand } from "../console";
 
 @injectable()
 export class VSCodeAdd implements ICommand {
+    private settings: ISettings;
 
     constructor(
         @inject("Fs") private fs: typeof Fs,
-        @inject("Settings") private settings: ISettings,
+        @inject("getSettings")  getSettings: () => ISettings,
     ) {
+        this.settings = getSettings();
     }
 
     public get description() {

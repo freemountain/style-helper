@@ -84,7 +84,7 @@ export class DockerCli {
             .filter(s => s !== "")
             .map(s => s.slice(2, -2));
     }
-
+/*
     public getConfig(): IDockerConfig {
         if (!process.env["DOCKER_HOST"] || !process.env["DOCKER_CERT_PATH"]) {
             throw new Error(`Could not find environment variables DOCKER_HOST or DOCKER_CERT_PATH`);
@@ -97,4 +97,5 @@ export class DockerCli {
             certPath: process.env["DOCKER_CERT_PATH"] as string,
         };
     }
+    */
 }
