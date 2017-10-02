@@ -7,7 +7,6 @@ import { interfaces } from "inversify";
 
 const createExecuteWrapper = (cmd: ICommand, resolve: Function, reject: Function) => async (args: yargs.Arguments) => {
     try {
-        console.error(`execute wrapper ${cmd.command}`, args);
         const stream = new CommandEventStream(`${args.$0} ${cmd.command}`, `${args.$0} ${cmd.command}`);
         printStream({
             source: stream.stream,
