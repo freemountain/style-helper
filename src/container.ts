@@ -24,26 +24,15 @@ container.bind("WerckerStop").to(commands.WerckerStop);
 
 container.bind("DockerCli").to(DockerCli);
 container.bind("Wercker").to(Wercker);
-
 container.bind<typeof fs>("Fs").toConstantValue(fs);
+
 container.bind<ISettings>("getSettings").toFactory(() => () => {
-    let dockerEnv;
-    if(process.env["STH_DOCKER_HOST"]) {
-        dockerEnv = process.env["STH_DOCKER_HOST"] as string;
-    } else if (process.env["DOCKER_HOST"]) {
-        dockerEnv = process.env["DOCKER_HOST"] as string;
-    } else {
-        throw new Error(`Could not find environment variables DOCKER_HOST or STH_DOCKER_HOST`);
-    }
+    let dockerEnv = process.env["DOCKER_HOST"] ? process.env["DOCKER_HOST"] as string : "http://127.0.0.1";
 
     return {
         docker: parse(dockerEnv).hostname,
         appDir: join(__dirname, ".."),
     }
-});
-
-container.bind<() => Docker>("getDocker").toFactory<Docker>(() => () => {
-    return new Docker();
 });
 
 container.bind<() => ICommand[]>("getCommands")

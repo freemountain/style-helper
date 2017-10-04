@@ -16,16 +16,13 @@ interface IKeyValue<K, V> {
 
 @injectable()
 export class Wercker {
-    private docker: Docker;
     private settings: ISettings;
 
     constructor(
-        @inject("getDocker") getDocker: () => Docker,
         @inject("DockerCli") private dockerCli: DockerCli,
         @inject("Fs") private fs: typeof Fs,
         @inject("getSettings") private getSettings: () => ISettings,
     ) {
-        this.docker = getDocker();
         this.settings = getSettings();
     }
 
@@ -36,8 +33,8 @@ export class Wercker {
         return ids.reduce(
             async (next: Promise<IStringMap<string>>, id: string) => {
                 const all: IStringMap<string> = await next;
-                const container = this.docker.getContainer(id);
-                const info = await container.inspect();
+                //const container = this.docker.getContainer(id);
+                const info = await this.dockerCli.inspect(id);
                 const name = info.Name.slice(9);
 
                 return { ...all, ...this.generateServiceEnv(this.settings.docker, name, info) };

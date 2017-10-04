@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
-import * as Docker from "dockerode";
 import { parse } from "url";
+import * as Docker from "dockerode";
 
 import { IDockerRunOptions, IDockerConfig, IStringMap } from "../interfaces";
 import { exec, mapArg } from "../utils";
@@ -8,12 +8,8 @@ import { fakeStream, ICommandSF } from "../console";
 
 @injectable()
 export class DockerCli {
-    private docker: Docker;
-
     constructor(
-        @inject("getDocker") getDocker: () => Docker,
     ) {
-        this.docker = getDocker();
     }
 
     public async pull(image: string, registry?: string, progress: ICommandSF = fakeStream()) {
@@ -59,6 +55,16 @@ export class DockerCli {
         return stdout.trim().slice(0, 12);
     }
 
+    public async inspect(id: string): Promise<Docker.ContainerInspectInfo> {
+        const { stdout, code } = await exec({
+            command: `docker`,
+            args: ["inspect", id]
+        });
+        if(code !== 0) {
+            throw new Error(`command "docker inspect ${id}" failed`);
+        }
+        return JSON.parse(stdout)[0];
+    }
     public async kill(ids: string[], progress: ICommandSF = fakeStream()) {
         return Promise.all(ids.map(
             (id) => exec({

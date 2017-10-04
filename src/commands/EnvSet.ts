@@ -1,4 +1,3 @@
-import * as Docker from "dockerode";
 import { inject, injectable } from "inversify";
 import * as R from "ramda";
 import { Argv, Arguments } from "yargs";
@@ -8,14 +7,11 @@ import { ICommand, ICommandRootStream } from "../console";
 
 @injectable()
 export class EnvSet implements ICommand {
-    private docker: Docker;
 
     constructor(
-        @inject("getDocker") getDocker: () => Docker,
         @inject("Wercker") private wercker: Wercker,
 
     ) {
-        this.docker = getDocker();
     }
 
     public get description() {
